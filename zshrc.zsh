@@ -41,7 +41,6 @@ alias tfp="terraform plan"
 alias v="vim"
 alias vz="vim ~/.zshrc && source ~/.zshrc"
 alias z="source ~/.zshrc"
-eval "$(rbenv init -)"
 
 function fm() {
     ffmpeg -hide_banner -loglevel error -i "$@" -f ffmetadata -
