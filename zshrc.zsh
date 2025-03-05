@@ -19,8 +19,28 @@ if [ -f .honeycomb.zsh ] ; then
     source .honeycomb.zsh
 fi
 
-export PATH="/usr/local/sbin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
+## Set default system PATH
+
+# Check for macOS version using `uname -r`
+if [[ $(uname -r) =~ ^23 ]]; then
+    # macOS 14.x (Sonoma)
+    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+elif [[ $(uname -r) =~ ^24 ]]; then
+    # macOS 15.x (Sequoia)
+    export PATH="/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
+fi
+
+# Check for ARM-based Macs (Apple Silicon) or Intel-based Macs
+if [[ $(uname -m) == "arm64" ]]; then
+    # Apple Silicon (ARM)
+    export PATH="/opt/homebrew/bin:$PATH"
+else
+    # Intel-based Mac
+    export PATH="/usr/local/bin:$PATH"
+fi
+
+# Prepend $HOME/bin
+export PATH=$HOME/bin:$PATH
 
 alias apwhois="whois -h whois.apnic.net"
 alias awhois="whois -h whois.arin.net"
