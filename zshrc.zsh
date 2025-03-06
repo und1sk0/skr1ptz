@@ -27,16 +27,13 @@ if [[ $(uname -r) =~ ^23 ]]; then
     export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 elif [[ $(uname -r) =~ ^24 ]]; then
     # macOS 15.x (Sequoia)
-    export PATH="/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
+    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
 fi
 
 # Check for ARM-based Macs (Apple Silicon) or Intel-based Macs
 if [[ $(uname -m) == "arm64" ]]; then
     # Apple Silicon (ARM)
     export PATH="/opt/homebrew/bin:$PATH"
-else
-    # Intel-based Mac
-    export PATH="/usr/local/bin:$PATH"
 fi
 
 # Prepend $HOME/bin
@@ -49,7 +46,7 @@ alias cg="cd ~/git"
 alias cow="ssh noise@happy.cow.org."
 alias diff="colordiff"
 alias h="history | grep "
-alias kl="kitchen login"
+alias k="kubectl"
 alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
@@ -78,5 +75,5 @@ function prune() {
     }
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="$HOME/.rd/bin:$PATH"
+export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
