@@ -10,6 +10,7 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
     export EDITOR='vim'
 fi
+export LESSOPEN="| src-hilite-lesspipe.sh %s"
 
 if [ -f .aws-sso.zsh ] ; then
     source .aws-sso.zsh
