@@ -10,6 +10,7 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
     export EDITOR='vim'
 fi
+export LESSOPEN="| src-hilite-lesspipe.sh %s"
 
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
