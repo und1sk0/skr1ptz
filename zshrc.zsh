@@ -30,6 +30,7 @@ alias cow="ssh noise@happy.cow.org."
 alias diff="colordiff"
 alias h="history | grep "
 alias kl="kitchen login"
+alias mkd=mkdir
 alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
