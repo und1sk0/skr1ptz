@@ -11,14 +11,6 @@ else
     export EDITOR='vim'
 fi
 
-if [ -f .aws-sso.zsh ] ; then
-    source .aws-sso.zsh
-fi
-
-if [ -f .honeycomb.zsh ] ; then
-    source .honeycomb.zsh
-fi
-
 ## Set default system PATH
 
 # Check for macOS version using `uname -r`
@@ -77,3 +69,7 @@ function prune() {
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+if [ -d $HOME/.zshconfig ] ; then
+    source $HOME/.zshconfig/*zsh
+fi
