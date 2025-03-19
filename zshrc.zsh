@@ -12,14 +12,6 @@ else
 fi
 export LESSOPEN="| src-hilite-lesspipe.sh %s"
 
-if [ -f .aws-sso.zsh ] ; then
-    source .aws-sso.zsh
-fi
-
-if [ -f .honeycomb.zsh ] ; then
-    source .honeycomb.zsh
-fi
-
 ## Set default system PATH
 
 # Check for macOS version using `uname -r`
@@ -78,6 +70,7 @@ function prune() {
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
   print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
   command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
@@ -90,3 +83,9 @@ autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
 # examples here -> https://wiki.zshell.dev/ecosystem/category/-annexes
 zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
+
+if [ -d $HOME/.zshconfig ] ; then
+    for f in $HOME/.zshconfig/*.zsh ; do
+        source $f
+    done
+fi
