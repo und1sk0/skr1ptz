@@ -71,5 +71,7 @@ export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 if [ -d $HOME/.zshconfig ] ; then
-    source $HOME/.zshconfig/*zsh
+    for f in $HOME/.zshconfig/*.zsh ; do
+        source $f
+    done
 fi
