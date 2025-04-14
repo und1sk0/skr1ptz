@@ -67,6 +67,10 @@ function prune() {
         xargs git branch -d
     }
 
+function ssm() {
+    aws ssm start-session --target $@
+    }
+
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
