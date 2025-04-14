@@ -39,6 +39,7 @@ alias cg="cd ~/git"
 alias cow="ssh noise@happy.cow.org."
 alias diff="colordiff"
 alias h="history | grep "
+alias mkd=mkdir
 alias k="kubectl"
 alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
