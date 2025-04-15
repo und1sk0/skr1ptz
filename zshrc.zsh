@@ -46,7 +46,6 @@ alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
 alias s="ssh -q"
-alias sso="aws sso login --profile ${AWS_PROFILE}"
 alias tfa="terraform apply"
 alias tfd="terraform destroy"
 alias tff="terraform fmt"
