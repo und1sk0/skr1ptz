@@ -1,6 +1,7 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="random"
 DISABLE_UPDATE_PROMPT="true"
+AWS_PROFILE="default"
 export UPDATE_ZSH_DAYS=7
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
@@ -45,7 +46,6 @@ alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
 alias s="ssh -q"
-alias sso="aws sso login --profile AdministratorAccess-437118581657"
 alias tfa="terraform apply"
 alias tfd="terraform destroy"
 alias tff="terraform fmt"
@@ -94,3 +94,5 @@ if [ -d $HOME/.zshconfig ] ; then
         source $f
     done
 fi
+
+
