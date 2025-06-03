@@ -61,30 +61,30 @@ function fm() {
 }
 
 function prune() {
-  local delete_arg="-d"
+    local delete_arg="-d"
 
   # Parse options
   while getopts "f" opt; do
-    case $opt in
-      f) delete_arg="-D" ;;
-    esac
+      case $opt in
+          f) delete_arg="-D" ;;
+      esac
   done
 
   # Prune remote-tracking branches
   git fetch -p
 
   # Get local branches with no matching remote
-  local_stale_branches=$(git branch -vv | awk '/origin\/.*: gone]/ {print $1}')
+  local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {print $1}')}")
 
   if [[ -z "$local_stale_branches" ]]; then
-    echo "No stale branches to delete."
-    return
+      echo "No stale branches to delete."
+      return
   fi
 
   echo "Deleting stale branches:"
   for branch in $local_stale_branches; do
-    echo "  $branch"
-    git branch $delete_arg "$branch"
+      echo "  $branch"
+      git branch $delete_arg "$branch"
   done
 }
 
