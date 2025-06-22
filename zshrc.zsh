@@ -40,9 +40,12 @@ alias c="curl -sq"
 alias cg="cd ~/git"
 alias cow="ssh noise@happy.cow.org."
 alias diff="colordiff"
+alias gres="gco main && gl"
 alias h="history | grep "
 alias mkd=mkdir
 alias k="kubectl"
+alias kd="kubectl config use-context dev"
+alias kp="kubectl config use-context prod"
 alias rg='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
@@ -59,6 +62,33 @@ alias z="source ~/.zshrc"
 function fm() {
     ffmpeg -hide_banner -loglevel error -i "$@" -f ffmetadata -
 }
+
+# Prevent pushes to main/master
+function git_safe_push() {
+  local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+  if [[ "$branch" == "main" || "$branch" == "master" ]]; then
+    echo "🚫 Refusing to push to '$branch'. Use a feature branch instead."
+    return 1
+  fi
+
+  command git push "$@"
+}
+
+function git_safe_push_upstream() {
+  local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+  if [[ "$branch" == "main" || "$branch" == "master" ]]; then
+    echo "🚫 Refusing to push to '$branch'. Use a feature branch instead."
+    return 1
+  fi
+
+  command git push --set-upstream origin "$branch"
+}
+
+# Override your aliases
+alias gp='git_safe_push'
+alias gpsup='git_safe_push_upstream'
 
 function prune() {
     local delete_arg="-d"
@@ -114,5 +144,4 @@ if [ -d $HOME/.zshconfig ] ; then
         source $f
     done
 fi
-
-
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
