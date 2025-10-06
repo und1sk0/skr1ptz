@@ -42,8 +42,9 @@ alias cow="ssh noise@happy.cow.org."
 alias diff="colordiff"
 alias gres="gco main && gl"
 alias h="history | grep "
-alias mkd=mkdir
 alias k="kubectl"
+alias mkd=mkdir
+alias opera="/Applications/Opera.app/Contents/MacOS/Opera"
 alias kd="kubectl config use-context dev"
 alias kp="kubectl config use-context prod"
 alias rg='grep -r'
@@ -123,7 +124,7 @@ function ssm() {
 }
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/cneill/.rd/bin:$PATH"
+export PATH="/Users/$USER/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
