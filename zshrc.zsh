@@ -1,38 +1,32 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="random"
 DISABLE_UPDATE_PROMPT="true"
-AWS_PROFILE="default"
+export AWS_PROFILE="default"
 export UPDATE_ZSH_DAYS=7
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
 set -o vi
-if [[ -n $SSH_CONNECTION ]]; then
-    export EDITOR='vim'
-else
-    export EDITOR='vim'
-fi
+
+export EDITOR='vim'
+
 export LESSOPEN="| src-hilite-lesspipe.sh %s"
 export LESS=' -R'
 
 ## Set default system PATH
 
-# Check for macOS version using `uname -r`
-if [[ $(uname -r) =~ ^23 ]]; then
-    # macOS 14.x (Sonoma)
-    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-elif [[ $(uname -r) =~ ^24 ]]; then
-    # macOS 15.x (Sequoia)
-    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
-fi
+# Set base system PATH by macOS version
+case "$(uname -r)" in
+    23.*) export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" ;;    # macOS 14 Sonoma
+    *)    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin" ;;    # macOS 15+ Sequoia
+esac
 
-# Check for ARM-based Macs (Apple Silicon) or Intel-based Macs
+# Apple Silicon: prepend Homebrew
 if [[ $(uname -m) == "arm64" ]]; then
-    # Apple Silicon (ARM)
     export PATH="/opt/homebrew/bin:$PATH"
 fi
 
 # Prepend $HOME/bin
-export PATH=$HOME/bin:$PATH
+export PATH="$HOME/bin:$PATH"
 
 alias apwhois="whois -h whois.apnic.net"
 alias awhois="whois -h whois.arin.net"
@@ -43,11 +37,10 @@ alias diff="colordiff"
 alias gres="gco main && gl"
 alias h="history | grep "
 alias k="kubectl"
-alias mkd=mkdir
 alias opera="/Applications/Opera.app/Contents/MacOS/Opera"
 alias kd="kubectl config use-context dev"
 alias kp="kubectl config use-context prod"
-alias rg='grep -r'
+alias rgrep='grep -r'
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
 alias s="ssh -q"
@@ -57,6 +50,7 @@ alias tff="terraform fmt"
 alias tfi="terraform init"
 alias tfp="terraform plan"
 alias v="vim"
+alias vax="find . \( -name '*.yaml' -o -name '*.json' -o -name '*.txt' -o -name '*.log' \) -print0 | xargs -0 xattr -d com.apple.quarantine 2>/dev/null"
 alias vz="vim ~/.zshrc && source ~/.zshrc"
 alias z="source ~/.zshrc"
 
@@ -65,66 +59,58 @@ function fm() {
 }
 
 # Prevent pushes to main/master
+function _git_guard_main() {
+    local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+    if [[ "$branch" == "main" || "$branch" == "master" ]]; then
+        echo "Refusing to push to '$branch'. Use a feature branch instead."
+        return 1
+    fi
+}
+
 function git_safe_push() {
-  local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-
-  if [[ "$branch" == "main" || "$branch" == "master" ]]; then
-    echo "🚫 Refusing to push to '$branch'. Use a feature branch instead."
-    return 1
-  fi
-
-  command git push "$@"
+    _git_guard_main || return 1
+    command git push "$@"
 }
 
 function git_safe_push_upstream() {
-  local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-
-  if [[ "$branch" == "main" || "$branch" == "master" ]]; then
-    echo "🚫 Refusing to push to '$branch'. Use a feature branch instead."
-    return 1
-  fi
-
-  command git push --set-upstream origin "$branch"
+    _git_guard_main || return 1
+    command git push --set-upstream origin "$(git symbolic-ref --short HEAD)"
 }
 
-# Override your aliases
 alias gp='git_safe_push'
 alias gpsup='git_safe_push_upstream'
 
 function prune() {
     local delete_arg="-d"
 
-  # Parse options
-  while getopts "f" opt; do
-      case $opt in
-          f) delete_arg="-D" ;;
-      esac
-  done
+    while getopts "f" opt; do
+        case $opt in
+            f) delete_arg="-D" ;;
+        esac
+    done
 
-  # Prune remote-tracking branches
-  git fetch -p
+    git fetch -p
 
-  # Get local branches with no matching remote
-  local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {print $1}')}")
+    local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {print $1}')}")
 
-  if [[ -z "$local_stale_branches" ]]; then
-      echo "No stale branches to delete."
-      return
-  fi
+    if [[ -z "$local_stale_branches" ]]; then
+        echo "No stale branches to delete."
+        return
+    fi
 
-  echo "Deleting stale branches:"
-  for branch in $local_stale_branches; do
-      echo "  $branch"
-      git branch $delete_arg "$branch"
-  done
+    echo "Deleting stale branches:"
+    for branch in $local_stale_branches; do
+        echo "  $branch"
+        git branch "$delete_arg" "$branch"
+    done
 }
 
 function ssm() {
-    aws ssm start-session --target $@
+    aws ssm start-session --target "$@"
 }
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/$USER/.rd/bin:$PATH"
+export PATH="/Users/cneill/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
@@ -146,3 +132,5 @@ if [ -d $HOME/.zshconfig ] ; then
     done
 fi
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+[[ $- == *i* ]] && clear
