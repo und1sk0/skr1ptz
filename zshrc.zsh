@@ -5,6 +5,7 @@ export AWS_PROFILE="default"
 export UPDATE_ZSH_DAYS=7
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
+
 set -o vi
 
 export EDITOR='vim'
@@ -12,22 +13,29 @@ export EDITOR='vim'
 export LESSOPEN="| src-hilite-lesspipe.sh %s"
 export LESS=' -R'
 
-## Set default system PATH
+## PATH setup
+# Base system paths
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
-# Set base system PATH by macOS version
-case "$(uname -r)" in
-    23.*) export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" ;;    # macOS 14 Sonoma
-    *)    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin" ;;    # macOS 15+ Sequoia
-esac
-
-# Apple Silicon: prepend Homebrew
+# Homebrew (chip architecture, not macOS version)
 if [[ $(uname -m) == "arm64" ]]; then
     export PATH="/opt/homebrew/bin:$PATH"
 fi
 
-# Prepend $HOME/bin
-export PATH="$HOME/bin:$PATH"
+# Java (Homebrew OpenJDK)
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
+# User bins
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/und1sk0/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# Deduplicate PATH
+path=("${(@u)path}")
+
+## Aliases
 alias apwhois="whois -h whois.apnic.net"
 alias awhois="whois -h whois.arin.net"
 alias c="curl -sq"
@@ -37,10 +45,11 @@ alias diff="colordiff"
 alias gres="gco main && gl"
 alias h="history | grep "
 alias k="kubectl"
-alias opera="/Applications/Opera.app/Contents/MacOS/Opera"
 alias kd="kubectl config use-context dev"
 alias kp="kubectl config use-context prod"
-alias rgrep='grep -r'
+alias mkd=mkdir
+alias opera="/Applications/Opera.app/Contents/MacOS/Opera"
+alias rgr='grep -r'  # rg is reserved for ripgrep
 alias rmt="find . -name .terraform -type d -exec rm -rf {} \;"
 alias rwhois="whois -h whois.ripe.net"
 alias s="ssh -q"
@@ -53,6 +62,8 @@ alias v="vim"
 alias vax="find . \( -name '*.yaml' -o -name '*.json' -o -name '*.txt' -o -name '*.log' \) -print0 | xargs -0 xattr -d com.apple.quarantine 2>/dev/null"
 alias vz="vim ~/.zshrc && source ~/.zshrc"
 alias z="source ~/.zshrc"
+
+## Functions
 
 function fm() {
     ffmpeg -hide_banner -loglevel error -i "$@" -f ffmetadata -
@@ -109,10 +120,7 @@ function ssm() {
     aws ssm start-session --target "$@"
 }
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/cneill/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
+## zi plugin manager
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
     print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
     command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
@@ -123,14 +131,12 @@ fi
 source "$HOME/.zi/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
-# examples here -> https://wiki.zshell.dev/ecosystem/category/-annexes
-zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
+zicompinit
 
-if [ -d $HOME/.zshconfig ] ; then
-    for f in $HOME/.zshconfig/*.zsh ; do
+## Local config overrides
+if [ -d $HOME/.zshconfig ]; then
+    for f in $HOME/.zshconfig/*.zsh; do
         source $f
     done
 fi
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-
 [[ $- == *i* ]] && clear
