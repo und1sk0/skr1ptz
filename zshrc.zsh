@@ -104,7 +104,7 @@ function prune() {
 
     # `git branch -vv` marks the checked-out branch with a leading "* " instead of
     # two spaces, which shifts $1 to the literal "*" for that line — strip it first.
-    local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {sub(/^\* /, ""); print $1}')}")
+    local local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {sub(/^\* /, ""); print $1}')}")
 
     if [[ -z "$local_stale_branches" ]]; then
         echo "No stale branches to delete."
