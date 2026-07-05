@@ -102,11 +102,23 @@ function prune() {
 
     git fetch -p
 
-    local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {print $1}')}")
+    # `git branch -vv` marks the checked-out branch with a leading "* " instead of
+    # two spaces, which shifts $1 to the literal "*" for that line — strip it first.
+    local_stale_branches=("${(@f)$(git branch -vv | awk '/origin\/.*: gone]/ {sub(/^\* /, ""); print $1}')}")
 
     if [[ -z "$local_stale_branches" ]]; then
         echo "No stale branches to delete."
         return
+    fi
+
+    # git refuses to delete the branch you're on — hop to the default branch first
+    # if it's one of the stale ones.
+    local current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if (( ${local_stale_branches[(Ie)$current_branch]} )); then
+        local default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+        default_branch="${default_branch:-main}"
+        echo "Current branch '$current_branch' is stale — switching to '$default_branch' first."
+        git checkout "$default_branch"
     fi
 
     echo "Deleting stale branches:"
