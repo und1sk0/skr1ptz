@@ -42,6 +42,7 @@ alias c="curl -sq"
 alias cg="cd ~/git"
 alias claudia="claude"
 alias diff="colordiff"
+alias gres="gco main && gl"
 alias h="history | grep "
 alias k="kubectl"
 alias kd="kubectl config use-context dev"
@@ -90,11 +91,6 @@ function git_safe_push_upstream() {
 
 alias gp='git_safe_push'
 alias gpsup='git_safe_push_upstream'
-
-function gres() {
-    gco main 2>/dev/null || gco master
-    gl
-}
 
 function prune() {
     local delete_arg="-d"
