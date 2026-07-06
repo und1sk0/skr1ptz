@@ -29,7 +29,7 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/und1sk0/.rd/bin:$PATH"
+export PATH="$HOME/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 # Deduplicate PATH
@@ -40,7 +40,7 @@ alias apwhois="whois -h whois.apnic.net"
 alias awhois="whois -h whois.arin.net"
 alias c="curl -sq"
 alias cg="cd ~/git"
-alias cow="ssh noise@happy.cow.org."
+alias claudia="claude"
 alias diff="colordiff"
 alias gres="gco main && gl"
 alias h="history | grep "
@@ -62,6 +62,7 @@ alias v="vim"
 alias vax="find . \( -name '*.yaml' -o -name '*.json' -o -name '*.txt' -o -name '*.log' \) -print0 | xargs -0 xattr -d com.apple.quarantine 2>/dev/null"
 alias vz="vim ~/.zshrc && source ~/.zshrc"
 alias z="source ~/.zshrc"
+alias zc="source ~/.zshconfig/*.zsh"
 
 ## Functions
 
